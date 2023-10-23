@@ -1,0 +1,139 @@
+class Process:
+    def __init__(self, process_id, arrival_time, burst_time, priority):
+        self.process_id = process_id
+        self.arrival_time = arrival_time
+        self.burst_time = burst_time
+        self.priority = priority
+        self.completion_time = 0
+        self.waiting_time = 0
+        self.turnaround_time = 0
+        self.remaining_time = burst_time
+
+
+def priority_preemptive(processes):
+    def find_max_prior_arrived(currTime, lst):
+        available_processes = [process for process in lst if
+                               process.arrival_time <= currTime and process.remaining_time > 0]
+        if available_processes:
+            available_processes.sort(key=lambda x: x.priority)
+            return available_processes[0], True
+        return None, False
+
+    def all_done(lst):
+        return all(process.remaining_time == 0 for process in lst)
+
+    curr_time = 0
+    while not all_done(processes):
+        process, has_arrived = find_max_prior_arrived(curr_time, processes)
+        if not has_arrived:
+            curr_time += 1
+            continue
+
+        process.remaining_time -= 1
+        curr_time += 1
+        if process.remaining_time == 0:
+            process.completion_time = curr_time
+            process.turnaround_time = process.completion_time - process.arrival_time
+            process.waiting_time = process.turnaround_time - process.burst_time
+
+    return processes
+
+def priority_non_preemptive(processes):
+    processes.sort(key=lambda x: (x.priority, x.arrival_time))  # Sắp xếp tiến trình theo ưu tiên và thời gian xuất hiện
+    curr_time = 0
+    for process in processes:
+        if process.arrival_time > curr_time:
+            curr_time = process.arrival_time
+        process.completion_time = curr_time + process.burst_time
+        process.turnaround_time = process.completion_time - process.arrival_time
+        process.waiting_time = process.turnaround_time - process.burst_time
+        curr_time = process.completion_time
+    return processes
+
+def average_turnaround_time(processes):
+    return sum(process.turnaround_time for process in processes) / len(processes)
+
+
+def average_waiting_time(processes):
+    return sum(process.waiting_time for process in processes) / len(processes)
+
+def get_processes_from_file(file_path):
+    processes = []
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            process_data = line.split()
+            process_id, arrival_time, burst_time, priority = map(int, process_data)
+            process = Process(process_id, arrival_time, burst_time, priority)
+            processes.append(process)
+    return processes
+
+def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTime,input_file,algorithm_type):
+    with open(file_path, 'a') as file:
+        file.write(f"\nResults for {input_file} using {algorithm_type}:\n")
+        file.write("\nPreemptive Priority:\n")
+        file.write(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime\n")
+        for process in results:
+            file.write(f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}\n")
+
+        file.write(f"\nAverage Waiting Time: {avg_waitingTime}\n")
+        file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n")
+        file.write(f"\n--------------------------------------------------------------------------------------------------\n")
+def choose_input_file():
+    print("Choose an input file:")
+    print("1. input1.txt")
+    print("2. input2.txt")
+    print("3. process3.txt")
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        return "input1.txt"
+    elif choice == '2':
+        return "input2.txt"
+    elif choice == '3':
+        return "process3.txt"
+    else:
+        print("Invalid choice. Using default file input1.txt.")
+        return "input1.txt"
+def main():
+    while True:
+        print("Choose a scheduling algorithm:")
+        print("1. Priority Preemptive")
+        print("2. Priority Non Preemptive")
+        print("3. Quit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            file_name = choose_input_file()
+            scheduling_algorithm = priority_preemptive
+            algorithm_type = "Priority Preemptive"
+        elif choice == '2':
+            file_name = choose_input_file()
+            scheduling_algorithm = priority_non_preemptive
+            algorithm_type = "Priority Non Preemptive"
+        elif choice == '3':
+            break
+        else:
+            print("Invalid choice. Please try again.")
+            continue
+
+        list_processes = get_processes_from_file(file_name)
+
+        result = scheduling_algorithm(list_processes)
+        avg_turnaroundTime = average_turnaround_time(list_processes)
+        avg_waitingTime = average_waiting_time(list_processes)
+        print("\nPreemptive Priority:")
+        print(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime")
+        for process in result:
+            print(
+                f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+
+        print(f"\nAverage Waiting Time: {avg_waitingTime}")
+        print(f"Average Turnaround Time: {avg_turnaroundTime}")
+        print("\n--------------------------------------------------------------------------------------------------\n")
+        output_file = "output.txt"
+        write_results_to_file(output_file, result, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
+
+# Call the main function
+main()
