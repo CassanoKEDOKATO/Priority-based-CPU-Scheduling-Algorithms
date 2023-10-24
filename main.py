@@ -57,6 +57,20 @@ def average_turnaround_time(processes):
 def average_waiting_time(processes):
     return sum(process.waiting_time for process in processes) / len(processes)
 
+
+def generate_gantt_chart(processes):
+    gantt_chart = " "
+    curr_time = 0
+
+    for process in processes:
+        gantt_chart += "|"
+        for i in range(process.completion_time - curr_time):
+            gantt_chart += "-"
+        gantt_chart += f"P{process.process_id}"
+        curr_time = process.completion_time
+
+    gantt_chart += "|"
+    return gantt_chart
 def get_processes_from_file(file_path):
     processes = []
     with open(file_path, 'r') as file:
@@ -69,6 +83,7 @@ def get_processes_from_file(file_path):
     return processes
 
 def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTime,input_file,algorithm_type):
+    gantt_chart = generate_gantt_chart(results)
     with open(file_path, 'a') as file:
         file.write(f"\nResults for {input_file} using {algorithm_type}:\n")
         file.write("\nPreemptive Priority:\n")
@@ -78,6 +93,10 @@ def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTim
 
         file.write(f"\nAverage Waiting Time: {avg_waitingTime}\n")
         file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n")
+        # print("\nGantt Chart:\n")
+        # print(gantt_chart)
+        file.write(f"\nGantt Chart: \n")
+        file.write(f"\n {gantt_chart} \n")
         file.write(f"\n--------------------------------------------------------------------------------------------------\n")
 def choose_input_file():
     print("Choose an input file:")
@@ -131,6 +150,9 @@ def main():
 
         print(f"\nAverage Waiting Time: {avg_waitingTime}")
         print(f"Average Turnaround Time: {avg_turnaroundTime}")
+        print("\nGantt Chart: \n")
+        gantt_chart = generate_gantt_chart(result)
+        print(gantt_chart)
         print("\n--------------------------------------------------------------------------------------------------\n")
         output_file = "output.txt"
         write_results_to_file(output_file, result, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
