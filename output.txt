@@ -162,3 +162,20 @@ Gantt Chart:
   |----P1|----------P2|P3|-------P4|P5| 
 
 --------------------------------------------------------------------------------------------------
+
+Results for process3.txt using Priority Preemptive:
+
+Preemptive Priority:
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			5			1			5				5				0
+2			2			10			3			17				15				5
+3			4			2			2			7				3				1
+
+Average Waiting Time: 2.0
+Average Turnaround Time: 7.666666666666667
+
+Gantt Chart: 
+
+  |-----P1|------------P2|P3| 
+
+--------------------------------------------------------------------------------------------------
