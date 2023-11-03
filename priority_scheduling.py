@@ -49,6 +49,57 @@ def priority_non_preemptive(processes):
         process.waiting_time = process.turnaround_time - process.burst_time
         curr_time = process.completion_time
     return processes
+def fcfs(processes):
+    processes.sort(key=lambda x: x.arrival_time)  # Sắp xếp tiến trình theo thời gian xuất hiện
+    curr_time = 0
+    for process in processes:
+        if process.arrival_time > curr_time:
+            curr_time = process.arrival_time
+        process.completion_time = curr_time + process.burst_time
+        process.turnaround_time = process.completion_time - process.arrival_time
+        process.waiting_time = process.turnaround_time - process.burst_time
+        curr_time = process.completion_time
+    return processes
+
+def sjf_non_preemptive(processes):
+    processes.sort(key=lambda x: (x.burst_time, x.arrival_time))  # Sắp xếp tiến trình theo burst time và thời gian xuất hiện
+    curr_time = 0
+    for process in processes:
+        if process.arrival_time > curr_time:
+            curr_time = process.arrival_time
+        process.completion_time = curr_time + process.burst_time
+        process.turnaround_time = process.completion_time - process.arrival_time
+        process.waiting_time = process.turnaround_time - process.burst_time
+        curr_time = process.completion_time
+    return processes
+
+def round_robin(processes, time_quantum):
+    queue = []
+    processed_processes = []
+    curr_time = 0
+
+    while processes or queue:
+        while processes and processes[0].arrival_time <= curr_time:
+            queue.append(processes.pop(0))
+
+        if queue:
+            process = queue.pop(0)
+            if process.remaining_time <= time_quantum:
+                curr_time += process.remaining_time
+                process.remaining_time = 0
+                process.completion_time = curr_time
+                process.turnaround_time = process.completion_time - process.arrival_time
+                process.waiting_time = process.turnaround_time - process.burst_time
+                processed_processes.append(process)
+            else:
+                curr_time += time_quantum
+                process.remaining_time -= time_quantum
+                queue.append(process)
+
+        else:
+            curr_time += 1
+
+    return processed_processes
 
 def average_turnaround_time(processes):
     return sum(process.turnaround_time for process in processes) / len(processes)
@@ -86,7 +137,7 @@ def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTim
     gantt_chart = generate_gantt_chart(results)
     with open(file_path, 'a') as file:
         file.write(f"\nResults for {input_file} using {algorithm_type}:\n")
-        file.write("\nPreemptive Priority:\n")
+        file.write("\n.\n")
         file.write(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime\n")
         for process in results:
             file.write(f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}\n")
@@ -103,6 +154,8 @@ def choose_input_file():
     print("1. input1.txt")
     print("2. input2.txt")
     print("3. process3.txt")
+    print("4. priority_process1.txt")
+    print("5. priority_process2.txt")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -111,6 +164,10 @@ def choose_input_file():
         return "input2.txt"
     elif choice == '3':
         return "process3.txt"
+    elif choice == '4':
+        return "priority_process1.txt"
+    elif choice == '5':
+        return "priority_process2.txt"
     else:
         print("Invalid choice. Using default file input1.txt.")
         return "input1.txt"
@@ -142,7 +199,7 @@ def main():
         result = scheduling_algorithm(list_processes)
         avg_turnaroundTime = average_turnaround_time(list_processes)
         avg_waitingTime = average_waiting_time(list_processes)
-        print("\nPreemptive Priority:")
+        print("\nResult Table " f"{algorithm_type}" ":")
         print(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime")
         for process in result:
             print(
