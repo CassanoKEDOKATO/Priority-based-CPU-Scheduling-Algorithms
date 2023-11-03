@@ -1,18 +1,126 @@
 
-Results for rr_process.txt using RR (Round Robin) with Time Quantum 2:
+Results for non_preemptive_process.txt using Priority Non Preemptive:
 
 .
-ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
-3			2			2			6				4				2
-4			3			1			7				4				3
-2			1			4			11				10				6
-1			0			5			12				12				7
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			3			3			3				3				0
+3			1			4			3			7				6				2
+6			5			4			4			11				6				2
+4			4			2			5			13				9				7
+2			2			5			6			18				16				11
+5			6			9			7			27				21				12
+7			7			10			10			37				30				20
 
-Average Waiting Time: 4.5
-Average Turnaround Time: 7.5
+Average Waiting Time: 7.714285714285714
+Average Turnaround Time: 13.0
 
 Gantt Chart: 
 
-  |------P3|-P4|----P2|-P1| 
+  |---P1|----P3|----P6|--P4|-----P2|---------P5|----------P7| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for preemptive_process.txt using Priority Preemptive:
+
+.
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			1			2			1				1				0
+2			1			7			6			22				21				14
+3			2			3			3			5				3				0
+4			3			6			5			16				13				7
+5			4			5			4			10				6				1
+6			5			15			10			45				40				25
+7			15			8			9			30				15				7
+
+Average Waiting Time: 7.714285714285714
+Average Turnaround Time: 14.142857142857142
+
+Gantt Chart: 
+
+  |-P1|---------------------P2|P3|-----------P4|P5|-----------------------------------P6|P7| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for preemptive_process.txt using Priority Preemptive:
+
+.
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			1			2			1				1				0
+2			1			7			6			22				21				14
+3			2			3			3			5				3				0
+4			3			6			5			16				13				7
+5			4			5			4			10				6				1
+6			5			15			10			45				40				25
+7			15			8			9			30				15				7
+
+Average Waiting Time: 7.714285714285714
+Average Turnaround Time: 14.142857142857142
+
+Gantt Chart: 
+
+  |-P1||---------------------P2||P3||-----------P4||P5||-----------------------------------P6||P7| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for preemptive_process.txt using Priority Non Preemptive:
+
+.
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			1			2			1				1				0
+3			2			3			3			5				3				0
+5			4			5			4			10				6				1
+4			3			6			5			16				13				7
+2			1			7			6			23				22				15
+7			15			8			9			31				16				8
+6			5			15			10			46				41				26
+
+Average Waiting Time: 8.142857142857142
+Average Turnaround Time: 14.571428571428571
+
+Gantt Chart: 
+
+  |-P1|----P3|-----P5|------P4|-------P2|--------P7|---------------P6| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for non_preemptive_process.txt using Priority Non Preemptive:
+
+.
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			3			3			3				3				0
+3			1			4			3			7				6				2
+6			5			4			4			11				6				2
+4			4			2			5			13				9				7
+2			2			5			6			18				16				11
+5			6			9			7			27				21				12
+7			7			10			10			37				30				20
+
+Average Waiting Time: 7.714285714285714
+Average Turnaround Time: 13.0
+
+Gantt Chart: 
+
+  |---P1|----P3|----P6|--P4|-----P2|---------P5|----------P7| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for preemptive_process.txt using Priority Preemptive:
+
+.
+ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
+1			0			1			2			1				1				0
+2			1			7			6			22				21				14
+3			2			3			3			5				3				0
+4			3			6			5			16				13				7
+5			4			5			4			10				6				1
+6			5			15			10			45				40				25
+7			15			8			9			30				15				7
+
+Average Waiting Time: 7.714285714285714
+Average Turnaround Time: 14.142857142857142
+
+Gantt Chart: 
+
+  |-P1|---------------------P2|P3|-----------P4|P5|-----------------------------------P6|P7| 
 
 --------------------------------------------------------------------------------------------------

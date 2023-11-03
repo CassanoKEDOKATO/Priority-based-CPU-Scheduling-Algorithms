@@ -154,8 +154,8 @@ def choose_input_file():
     print("1. input1.txt")
     print("2. input2.txt")
     print("3. process3.txt")
-    print("4. priority_process1.txt")
-    print("5. priority_process2.txt")
+    print("4. non_preemptive_process.txt")
+    print("5. preemptive_process.txt")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -165,9 +165,9 @@ def choose_input_file():
     elif choice == '3':
         return "process3.txt"
     elif choice == '4':
-        return "priority_process1.txt"
+        return "non_preemptive_process.txt"
     elif choice == '5':
-        return "priority_process2.txt"
+        return "preemptive_process.txt"
     else:
         print("Invalid choice. Using default file input1.txt.")
         return "input1.txt"

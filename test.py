@@ -184,8 +184,8 @@ def choose_input_file():
     print("1. fcfs_process.txt")
     print("2. sjf_process.txt")
     print("3. rr_process.txt")
-    print("4. priority_process1.txt")
-    print("5. priority_process2.txt")
+    print("4. preemptive_process.txt")
+    print("5. non_preemptive_process.txt")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -195,34 +195,35 @@ def choose_input_file():
     elif choice == '3':
         return "rr_process.txt"
     elif choice == '4':
-        return "priority_process1.txt"
+        return "preemptive_process.txt"
     elif choice == '5':
-        return "priority_process2.txt"
+        return "non_preemptive_process.txt"
     else:
         print("Invalid choice. Using default file input1.txt.")
         return "heheh"
 def choose_algorithm():
     print("Choose a scheduling algorithm:")
-    print("1. Priority Preemptive")
-    print("2. Priority Non Preemptive")
-    print("3. FCFS (First Come First Serve)")
-    print("4. SJF (Shortest Job First)")
-    print("5. RR (Round Robin)")
+    print("1. FCFS (First Come First Serve)")
+    print("2. SJF (Shortest Job First)")
+    print("3. RR (Round Robin)")
+    print("4. Priority Preemptive")
+    print("5. Priority Non Preemptive")
     print("6. Quit")
 
     choice = input("Enter your choice: ")
 
+
     if choice == '1':
-        return priority_preemptive, "Priority Preemptive"
-    elif choice == '2':
-        return priority_non_preemptive, "Priority Non Preemptive"
-    elif choice == '3':
         return fcfs, "FCFS (First Come First Serve)"
-    elif choice == '4':
+    elif choice == '2':
         return sjf_non_preemptive, "SJF (Shortest Job First)"
-    elif choice == '5':
+    elif choice == '3':
         time_quantum = int(input("Enter time quantum for Round Robin: "))
         return lambda processes: round_robin(processes, time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
+    elif choice == '4':
+        return priority_preemptive, "Priority Preemptive"
+    elif choice == '5':
+        return priority_non_preemptive, "Priority Non Preemptive"
     elif choice == '6':
         return None, None
     else:
