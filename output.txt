@@ -1,126 +1,171 @@
 
-Results for non_preemptive_process.txt using Priority Non Preemptive:
+Results for rr_process.txt using RR (Round Robin) with Time Quantum 4:
 
 .
-ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
-1			0			3			3			3				3				0
-3			1			4			3			7				6				2
-6			5			4			4			11				6				2
-4			4			2			5			13				9				7
-2			2			5			6			18				16				11
-5			6			9			7			27				21				12
-7			7			10			10			37				30				20
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			5			2			10				5				3
+5			8			4			18				10				6
+2			3			5			23				20				15
+4			6			6			25				19				13
+1			0			10			27				27				17
 
-Average Waiting Time: 7.714285714285714
-Average Turnaround Time: 13.0
+Average Waiting Time: 10.8
+Average Turnaround Time: 16.2
 
 Gantt Chart: 
 
-  |---P1|----P3|----P6|--P4|-----P2|---------P5|----------P7| 
+  |----------P3|--------P5|-----P2|--P4|--P1| 
 
 --------------------------------------------------------------------------------------------------
 
-Results for preemptive_process.txt using Priority Preemptive:
+Results for rr_process.txt using RR (Round Robin) with Time Quantum 4:
 
 .
-ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
-1			0			1			2			1				1				0
-2			1			7			6			22				21				14
-3			2			3			3			5				3				0
-4			3			6			5			16				13				7
-5			4			5			4			10				6				1
-6			5			15			10			45				40				25
-7			15			8			9			30				15				7
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			5			2			10				5				3
+5			8			4			18				10				6
+2			3			5			23				20				15
+4			6			6			25				19				13
+1			0			10			27				27				17
 
-Average Waiting Time: 7.714285714285714
-Average Turnaround Time: 14.142857142857142
+Average Waiting Time: 10.8
+Average Turnaround Time: 16.2
 
 Gantt Chart: 
 
-  |-P1|---------------------P2|P3|-----------P4|P5|-----------------------------------P6|P7| 
+  |----------P3|--------P5|-----P2|--P4|--P1| 
 
 --------------------------------------------------------------------------------------------------
 
-Results for preemptive_process.txt using Priority Preemptive:
+Results for rr_process.txt using RR (Round Robin) with Time Quantum 3:
 
 .
-ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
-1			0			1			2			1				1				0
-2			1			7			6			22				21				14
-3			2			3			3			5				3				0
-4			3			6			5			16				13				7
-5			4			5			4			10				6				1
-6			5			15			10			45				40				25
-7			15			8			9			30				15				7
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			2			3			9				7				4
+4			3			1			10				7				6
+1			0			5			15				15				10
+2			1			6			18				17				11
+5			4			5			20				16				11
 
-Average Waiting Time: 7.714285714285714
-Average Turnaround Time: 14.142857142857142
+Average Waiting Time: 8.4
+Average Turnaround Time: 12.4
 
 Gantt Chart: 
 
-  |-P1||---------------------P2||P3||-----------P4||P5||-----------------------------------P6||P7| 
+  |---------P3|-P4|-----P1|---P2|--P5| 
 
 --------------------------------------------------------------------------------------------------
 
-Results for preemptive_process.txt using Priority Non Preemptive:
+Results for rr_process.txt using RR (Round Robin) with Time Quantum 4:
 
 .
-ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
-1			0			1			2			1				1				0
-3			2			3			3			5				3				0
-5			4			5			4			10				6				1
-4			3			6			5			16				13				7
-2			1			7			6			23				22				15
-7			15			8			9			31				16				8
-6			5			15			10			46				41				26
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			2			3			11				9				6
+4			3			1			12				9				8
+1			0			5			17				17				12
+2			1			6			19				18				12
+5			4			5			20				16				11
 
-Average Waiting Time: 8.142857142857142
-Average Turnaround Time: 14.571428571428571
+Average Waiting Time: 9.8
+Average Turnaround Time: 13.8
 
 Gantt Chart: 
 
-  |-P1|----P3|-----P5|------P4|-------P2|--------P7|---------------P6| 
+  |-----------P3|-P4|-----P1|--P2|-P5| 
 
 --------------------------------------------------------------------------------------------------
 
-Results for non_preemptive_process.txt using Priority Non Preemptive:
+Results for sjf_process.txt using SJF (Shortest Job First):
 
 .
-ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
-1			0			3			3			3				3				0
-3			1			4			3			7				6				2
-6			5			4			4			11				6				2
-4			4			2			5			13				9				7
-2			2			5			6			18				16				11
-5			6			9			7			27				21				12
-7			7			10			10			37				30				20
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+4			3			1			0				1				0
+5			4			2			0				3				1
+2			1			5			0				8				3
+3			2			6			0				14				8
+1			0			16			0				30				14
 
-Average Waiting Time: 7.714285714285714
-Average Turnaround Time: 13.0
+Average Waiting Time: 5.2
+Average Turnaround Time: 11.2
 
 Gantt Chart: 
 
-  |---P1|----P3|----P6|--P4|-----P2|---------P5|----------P7| 
+  |P4|P5|P2|P3|P1| 
 
 --------------------------------------------------------------------------------------------------
 
-Results for preemptive_process.txt using Priority Preemptive:
+Results for sjf_process.txt using SJF (Shortest Job First):
 
 .
-ProcessID	ArrivalTime	BurstTime	Priority	CompletionTime	TurnaroundTime	WaitingTime
-1			0			1			2			1				1				0
-2			1			7			6			22				21				14
-3			2			3			3			5				3				0
-4			3			6			5			16				13				7
-5			4			5			4			10				6				1
-6			5			15			10			45				40				25
-7			15			8			9			30				15				7
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			6			2			0				2				0
+2			3			3			0				5				2
+1			1			7			0				12				5
+5			9			8			0				20				12
+4			7			10			0				30				20
 
-Average Waiting Time: 7.714285714285714
-Average Turnaround Time: 14.142857142857142
+Average Waiting Time: 7.8
+Average Turnaround Time: 13.8
 
 Gantt Chart: 
 
-  |-P1|---------------------P2|P3|-----------P4|P5|-----------------------------------P6|P7| 
+  |P3|P2|P1|P5|P4| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for sjf_process.txt using SJF (Shortest Job First):
+
+.
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			6			2			8				2				0
+2			3			3			11				8				5
+1			1			7			18				17				10
+5			9			8			26				17				9
+4			7			10			36				29				19
+
+Average Waiting Time: 8.6
+Average Turnaround Time: 14.6
+
+Gantt Chart: 
+
+  |--------P3|---P2|-------P1|--------P5|----------P4| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for sjf_process.txt using SJF (Shortest Job First):
+
+.
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+3			6			2			8				2				0
+2			3			3			11				8				5
+1			1			7			18				17				10
+5			9			8			26				17				9
+4			7			10			36				29				19
+
+Average Waiting Time: 8.6
+Average Turnaround Time: 14.6
+
+Gantt Chart: 
+
+  |--------P3|---P2|-------P1|--------P5|----------P4| 
+
+--------------------------------------------------------------------------------------------------
+
+Results for sjf_process.txt using SJF (Shortest Job First):
+
+.
+ProcessID	ArrivalTime	BurstTime	CompletionTime	TurnaroundTime	WaitingTime
+4			3			1			4				1				0
+5			4			2			6				2				0
+2			1			5			11				10				5
+3			2			6			17				15				9
+1			0			16			33				33				17
+
+Average Waiting Time: 6.2
+Average Turnaround Time: 12.2
+
+Gantt Chart: 
+
+  |----P4|--P5|-----P2|------P3|----------------P1| 
 
 --------------------------------------------------------------------------------------------------
