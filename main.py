@@ -24,30 +24,17 @@ class ProcessWithoutPriority:
         self.remaining_time = burst_time
 
 
-def sjf_non_preemptive(processes):
-    processes.sort(key=lambda x: (x.arrival_time, x.burst_time))  # Sắp xếp tiến trình theo thời gian đến và thời gian burst
-
+def fcfs(processes):
+    processes.sort(key=lambda x: x.arrival_time)  # Sắp xếp tiến trình theo thời gian xuất hiện
     curr_time = 0
-    ready_queue = []
-    result = []
-
-    while processes or ready_queue:
-        while processes and processes[0].arrival_time <= curr_time:
-            ready_queue.append(processes.pop(0))
-
-        if not ready_queue:
-            curr_time += 1
-            continue
-
-        ready_queue.sort(key=lambda x: x.burst_time)
-        process = ready_queue.pop(0)
-
-        process.waiting_time = curr_time - process.arrival_time
-        process.turnaround_time = process.waiting_time + process.burst_time
-        curr_time += process.burst_time
-        result.append(process)
-
-    return result
+    for process in processes:
+        if process.arrival_time > curr_time:
+            curr_time = process.arrival_time
+        process.completion_time = curr_time + process.burst_time
+        process.turnaround_time = process.completion_time - process.arrival_time
+        process.waiting_time = process.turnaround_time - process.burst_time
+        curr_time = process.completion_time
+    return processes
 
 
 def sjf_non_preemptive(processes):
@@ -61,6 +48,8 @@ def sjf_non_preemptive(processes):
         process.waiting_time = process.turnaround_time - process.burst_time
         curr_time = process.completion_time
     return processes
+
+
 
 
 def round_robin(processes, time_quantum):
