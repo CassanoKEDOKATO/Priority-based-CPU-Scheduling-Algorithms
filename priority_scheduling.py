@@ -211,7 +211,7 @@ def main():
         gantt_chart = generate_gantt_chart(result)
         print(gantt_chart)
         print("\n--------------------------------------------------------------------------------------------------\n")
-        output_file = "output.txt"
+        output_file = "history.txt"
         write_results_to_file(output_file, result, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
 
 # Call the main function

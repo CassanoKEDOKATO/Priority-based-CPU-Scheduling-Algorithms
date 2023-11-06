@@ -220,7 +220,7 @@ def choose_algorithm():
     elif choice == '2':
         return sjf_non_preemptive, "SJF (Shortest Job First)"
     elif choice == '3':
-        time_quantum = int(input("Enter time quantum for Round Robin: "))
+        time_quantum = int(input("Enter time quantum for Round Robin('example:4'): "))
         return lambda processes: round_robin(processes, time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
     elif choice == '4':
         return priority_preemptive, "Priority Preemptive"
@@ -263,7 +263,7 @@ def main():
         gantt_chart = generate_gantt_chart(result)
         print(gantt_chart)
         print("\n--------------------------------------------------------------------------------------------------\n")
-        output_file = "output.txt"
+        output_file = "history.txt"
         write_results_to_file(output_file, result, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
 
 # Cuối cùng, gọi hàm main:
