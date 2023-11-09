@@ -132,6 +132,43 @@ def get_processes_from_file(file_path):
             process = Process(process_id, arrival_time, burst_time, priority)
             processes.append(process)
     return processes
+def compare_algorithms():
+    algorithms = [
+        priority_preemptive,
+        priority_non_preemptive,
+        fcfs,
+        sjf_non_preemptive,
+        round_robin
+    ]
+
+    print(f"There are {len(algorithms)} algorithms available.")
+    print("Choose algorithms to compare (enter algorithm numbers separated by spaces):")
+    for i, algorithm in enumerate(algorithms):
+        print(f"{i+1}. {algorithm.__name__}")
+
+    chosen_algorithms = input("Enter algorithm numbers: ").split()
+    chosen_algorithms = [algorithms[int(alg) - 1] for alg in chosen_algorithms]
+
+    file_name = choose_input_file()
+    list_processes = get_processes_from_file(file_name)
+
+    results = []
+
+    for algorithm in chosen_algorithms:
+        list_processes_copy = list(list_processes)  # Create a copy of the original list
+        result = algorithm(list_processes_copy)
+        avg_turnaroundTime = average_turnaround_time(list_processes_copy)
+        avg_waitingTime = average_waiting_time(list_processes_copy)
+        results.append((algorithm.__name__, avg_turnaroundTime, avg_waitingTime))
+
+    with open('compare.txt', 'a') as file:
+        file.write(f"\nResults for {file_name}:\n")
+        for result in results:
+            file.write(f"\nAlgorithm: {result[0]}\n")
+            file.write(f"Average Turnaround Time: {result[1]}\n")
+            file.write(f"Average Waiting Time: {result[2]}\n")
+            file.write("\n")
+        file.write("-------------------------------------------------------------\n")
 
 def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTime,input_file,algorithm_type):
     gantt_chart = generate_gantt_chart(results)
@@ -154,8 +191,8 @@ def choose_input_file():
     print("1. input1.txt")
     print("2. input2.txt")
     print("3. process3.txt")
-    print("4. non_preemptive_process.txt")
-    print("5. preemptive_process.txt")
+    print("4. input5.txt")
+    print("5. input6.txt")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -165,9 +202,9 @@ def choose_input_file():
     elif choice == '3':
         return "process3.txt"
     elif choice == '4':
-        return "non_preemptive_process.txt"
+        return "input5.txt"
     elif choice == '5':
-        return "preemptive_process.txt"
+        return "input6.txt"
     else:
         print("Invalid choice. Using default file input1.txt.")
         return "input1.txt"
@@ -211,7 +248,7 @@ def main():
         gantt_chart = generate_gantt_chart(result)
         print(gantt_chart)
         print("\n--------------------------------------------------------------------------------------------------\n")
-        output_file = "history.txt"
+        output_file = "output.txt"
         write_results_to_file(output_file, result, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
 
 # Call the main function
