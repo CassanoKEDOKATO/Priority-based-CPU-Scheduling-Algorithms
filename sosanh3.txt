@@ -1,0 +1,20 @@
+-------------------- INPUT1.TXT--------------------
+Comparing 3 algorithms for input1.txt:
+Algorithm: FCFS (First Come First Serve)
+Average Waiting Time: 4.0
+Average Turnaround Time: 6.833333333333333
+
+Algorithm: SJF (Shortest Job First)
+Average Waiting Time: 4.333333333333333
+Average Turnaround Time: 7.166666666666667
+
+Algorithm: RR (Round Robin) with Time Quantum 4
+Average Waiting Time: 2.3333333333333335
+Average Turnaround Time: 5.166666666666667
+
+-------------------- INPUT7.TXT--------------------
+Comparing 1 algorithms for input7.txt:
+Algorithm: FCFS (First Come First Serve)
+Average Waiting Time: 3.1666666666666665
+Average Turnaround Time: 5.333333333333333
+
