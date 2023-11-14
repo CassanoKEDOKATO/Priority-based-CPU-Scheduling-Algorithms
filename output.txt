@@ -1,0 +1,15 @@
+--------------------------------------
+Results using FCFS (First Come First Serve):
+Average Waiting Time: 4.0
+Input File: INPUT1.TXT
+
+--------------------------------------
+Results using RR (Round Robin) with Time Quantum 4:
+Average Waiting Time: 4.166666666666667
+Input File: INPUT1.TXT
+
+--------------------------------------
+Results using SJF (Shortest Job First):
+Average Waiting Time: 4.333333333333333
+Input File: INPUT1.TXT
+

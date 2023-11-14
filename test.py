@@ -1,3 +1,4 @@
+import os
 from collections import deque
 
 
@@ -11,17 +12,6 @@ class Process:
         self.waiting_time = 0
         self.turnaround_time = 0
         self.remaining_time = burst_time
-
-
-# class ProcessWithoutPriority:
-#     def __init__(self, process_id, arrival_time, burst_time):
-#         self.process_id = process_id
-#         self.arrival_time = arrival_time
-#         self.burst_time = burst_time
-#         self.completion_time = 0
-#         self.waiting_time = 0
-#         self.turnaround_time = 0
-#         self.remaining_time = burst_time
 
 
 def fcfs(processes):
@@ -38,7 +28,8 @@ def fcfs(processes):
 
 
 def sjf_non_preemptive(processes):
-    processes.sort(key=lambda x: (x.burst_time, x.arrival_time))  # Sắp xếp tiến trình theo burst time và thời gian xuất hiện
+    processes.sort(
+        key=lambda x: (x.burst_time, x.arrival_time))  # Sắp xếp tiến trình theo burst time và thời gian xuất hiện
     curr_time = 0
     for process in processes:
         if process.arrival_time > curr_time:
@@ -72,7 +63,8 @@ def round_robin(processes, time_quantum):
 
 def priority_preemptive(processes):
     def find_max_prior_arrived(currTime, lst):
-        available_processes = [process for process in lst if process.arrival_time <= currTime and process.remaining_time > 0]
+        available_processes = [process for process in lst if
+                               process.arrival_time <= currTime and process.remaining_time > 0]
         if available_processes:
             available_processes.sort(key=lambda x: x.priority)
             return available_processes[0], True
@@ -144,11 +136,19 @@ def get_processes_from_file(file_path):
         for line in lines:
             process_data = line.split()
             if len(process_data) == 4:
-                process_id, arrival_time, burst_time, priority = map(int, process_data)
-                process = Process(process_id, arrival_time, burst_time, priority)
+                if process_data[0] != None:
+                    process_id, arrival_time, burst_time = process_data
+                    process = Process(process_id, int(arrival_time), int(burst_time), int(priority))
+                else:
+                    process_id, arrival_time, burst_time, priority = map(int, process_data)
+                    process = Process(process_id, arrival_time, burst_time, priority)
             elif len(process_data) == 3:
-                process_id, arrival_time, burst_time = map(int, process_data)
-                process = Process(process_id, arrival_time, burst_time, '' )
+                if process_data[0] != None:
+                    process_id, arrival_time, burst_time = process_data
+                    process = Process(process_id, int(arrival_time), int(burst_time), '')
+                else:
+                    process_id, arrival_time, burst_time = map(int, process_data)
+                    process = Process(process_id, arrival_time, burst_time, '')
             else:
                 print(f"Invalid data in line: {line}")
                 continue
@@ -156,13 +156,14 @@ def get_processes_from_file(file_path):
     return processes
 
 
-def write_results_to_file(file_path, avg_waitingTime,avg_turnaroundTime, input_file, algorithm_type):
+def write_results_to_file(file_path, avg_waitingTime, avg_turnaroundTime, input_file, algorithm_type):
     with open(file_path, 'a') as file:
         file.write(f"Results using {algorithm_type}:\n")
         file.write(f"Average Waiting Time: {avg_waitingTime}\n")
         file.write(f"Average Turnaround  Time: {avg_turnaroundTime}\n")
         file.write(f"Input File: {input_file.upper()}\n")
         file.write("\n")
+
 
 def sort_output_file(file_path):
     with open(file_path, 'r') as file:
@@ -194,26 +195,7 @@ def sort_output_file(file_path):
             file.write(f"Input File: {data['input_file']}\n")
             file.write("\n")
 
-# def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTime, input_file, algorithm_type):
-#     gantt_chart = generate_gantt_chart(results)
-#     with open(file_path, 'a') as file:
-#         file.write(f"\nResults for {input_file} using {algorithm_type}:\n")
-#         file.write("\n.\n")
-#         file.write(f"ProcessID\tArrivalTime\tBurstTime")
-#         if isinstance(results[0], ProcessWithPriority):
-#             file.write("\tPriority")
-#         file.write("\tCompletionTime\tTurnaroundTime\tWaitingTime\n")
-#         for process in results:
-#             file.write(f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}")
-#             if isinstance(process, ProcessWithPriority):
-#                 file.write(f"\t\t\t{process.priority}")
-#             file.write(f"\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}\n")
-#
-#         file.write(f"\nAverage Waiting Time: {avg_waitingTime}\n")
-#         file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n")
-#         file.write(f"\nGantt Chart: \n")
-#         file.write(f"\n {gantt_chart} \n")
-#         file.write(f"\n--------------------------------------------------------------------------------------------------\n")
+
 def compare_algorithms():
     print("Compare Algorithms")
     num_algorithms = int(input("Enter the number of algorithms to compare: "))
@@ -227,8 +209,8 @@ def compare_algorithms():
         chosen_algorithms.append((scheduling_algorithm, algorithm_type))
 
     file_name = choose_input_file()
-
     list_processes = get_processes_from_file(file_name)
+    output_file_name = input("Enter the output file name (Example: compare_results.txt): ")
     results = []
     for algorithm, algorithm_type in chosen_algorithms:
         result = algorithm(list_processes)
@@ -245,8 +227,7 @@ def compare_algorithms():
             else:
                 print(
                     f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\tNo Priority\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
-
-    with open('compare.txt', 'a') as file:
+    with open(output_file_name, 'a') as file:
         file.write(f"-------------------- {file_name.upper()}--------------------\n")
         file.write(f"Comparing {num_algorithms} algorithms for {file_name}:\n")
         for algorithm_type, _, avg_waitingTime, avg_turnaroundTime in results:
@@ -258,6 +239,50 @@ def compare_algorithms():
             file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n")
             print(f"Average Turnaround Time: {avg_turnaroundTime}\n")
             file.write("\n")
+
+
+# def compare_algorithms():
+#     print("Compare Algorithms")
+#     num_algorithms = int(input("Enter the number of algorithms to compare: "))
+#
+#     chosen_algorithms = []
+#     for i in range(num_algorithms):
+#         print(f"\nChoose algorithm {i + 1}:")
+#         scheduling_algorithm, algorithm_type = choose_algorithm()
+#         if scheduling_algorithm is None:
+#             return None
+#         chosen_algorithms.append((scheduling_algorithm, algorithm_type))
+#
+#     file_name = choose_input_file()
+#
+#     list_processes = get_processes_from_file(file_name)
+#
+#     output_file_name = input("Enter the output file name (Example: compare_results.txt): ")
+#
+#     avg_waiting_times = []
+#     avg_turnaround_times = []
+#
+#     with open(output_file_name, 'a') as output_file:
+#         output_file.write(f"Comparison Results for {file_name}:\n")
+#
+#         for algorithm, algorithm_type in chosen_algorithms:
+#             result = algorithm(list_processes)
+#             avg_turnaround_time = average_turnaround_time(result)
+#             avg_waiting_time = average_waiting_time(result)
+#             avg_waiting_times.append(avg_waiting_time)
+#             avg_turnaround_times.append(avg_turnaround_time)
+#
+#             output_file.write(f"\nAlgorithm: {algorithm_type}\n")
+#             output_file.write(f"Average Waiting Time: {avg_waiting_time}\n")
+#             output_file.write(f"Average Turnaround Time: {avg_turnaround_time}\n")
+#
+#             print(f"\n{algorithm_type}:")
+#             print(f"Average Waiting Time: {avg_waiting_time}")
+#             print(f"Average Turnaround Time: {avg_turnaround_time}")
+#
+#     print(f"Results saved to {output_file_name}")
+
+# ... Rest of the code ...
 
 # def compare_algorithms():
 #     print("Compare Algorithms")
@@ -309,6 +334,7 @@ def choose_input_file():
     print("4. input4.txt")
     print("5. input5.txt")
     print("6. input6.txt")
+    print("7. input7.txt")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -323,9 +349,13 @@ def choose_input_file():
         return "input5.txt"
     elif choice == '6':
         return "input6.txt"
+    elif choice == '7':
+        return "input7.txt"
     else:
         print("Invalid choice. Using default file input1.txt.")
         return "input1.txt"
+
+
 def choose_algorithm():
     print("Choose a scheduling algorithm:")
     print("1. FCFS (First Come First Serve)")
@@ -337,14 +367,14 @@ def choose_algorithm():
 
     choice = input("Enter your choice: ")
 
-
     if choice == '1':
         return fcfs, "FCFS (First Come First Serve)"
     elif choice == '2':
         return sjf_non_preemptive, "SJF (Shortest Job First)"
     elif choice == '3':
         time_quantum = int(input("Enter time quantum for Round Robin('example:4'): "))
-        return lambda processes: round_robin(processes, time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
+        return lambda processes: round_robin(processes,
+                                             time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
     elif choice == '4':
         return priority_preemptive, "Priority Preemptive"
     elif choice == '5':
@@ -356,7 +386,18 @@ def choose_algorithm():
         return priority_preemptive, "Priority Preemptive"
 
 
-# Trong hàm main, cập nhật phần sau:
+def get_input_files_from_directory(directory_path):
+    input_files = []
+    for file_name in os.listdir(directory_path):
+        if file_name.endswith(".txt"):  # Chỉ xem xét các file có đuôi là .txt
+            input_files.append(os.path.join("", file_name))
+    return input_files
+
+
+# Sử dụng hàm get_input_files_from_directory để lấy danh sách các file input từ một thư mục cụ thể
+directory_path = "C:/Users/ADMIN/PycharmProjects/pythonCPU"
+input_files = get_input_files_from_directory(directory_path)
+
 
 def main():
     while True:
@@ -398,8 +439,12 @@ def main():
             compare_algorithms()
         elif choice == '3':
             break
+            # print("Input Files in the Directory:")
+            # for file_path in input_files:
+            #     print(file_path)
         else:
             print("Invalid choice. Please try again.")
+
 
 if __name__ == "__main__":
     main()

@@ -12,18 +12,6 @@ class Process:
         self.turnaround_time = 0
         self.remaining_time = burst_time
 
-
-# class ProcessWithoutPriority:
-#     def __init__(self, process_id, arrival_time, burst_time):
-#         self.process_id = process_id
-#         self.arrival_time = arrival_time
-#         self.burst_time = burst_time
-#         self.completion_time = 0
-#         self.waiting_time = 0
-#         self.turnaround_time = 0
-#         self.remaining_time = burst_time
-
-
 def fcfs(processes):
     processes.sort(key=lambda x: x.arrival_time)  # Sắp xếp tiến trình theo thời gian xuất hiện
     curr_time = 0
@@ -157,7 +145,6 @@ def get_processes_from_file(file_path):
                 continue
             processes.append(process)
     return processes
-
 
 def write_results_to_file(file_path, avg_waitingTime,avg_turnaroundTime, input_file, algorithm_type):
     with open(file_path, 'a') as file:
