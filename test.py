@@ -102,6 +102,34 @@ def priority_non_preemptive(processes):
         curr_time = process.completion_time
     return processes
 
+def srtf_preemptive(processes):
+    processes.sort(key=lambda x: x.arrival_time)  # Sort processes by arrival time
+    current_time = 0
+    remaining_processes = list(processes)
+    completed_processes = []
+
+    while remaining_processes:
+        eligible_processes = [p for p in remaining_processes if p.arrival_time <= current_time]
+        if not eligible_processes:
+            current_time += 1
+            continue
+
+        # Find the process with the shortest remaining burst time
+        shortest_process = min(eligible_processes, key=lambda x: x.remaining_time)
+
+        # Execute the process for one time unit
+        shortest_process.remaining_time -= 1
+        current_time += 1
+
+        # Check if the process has completed
+        if shortest_process.remaining_time == 0:
+            shortest_process.completion_time = current_time
+            shortest_process.turnaround_time = shortest_process.completion_time - shortest_process.arrival_time
+            shortest_process.waiting_time = shortest_process.turnaround_time - shortest_process.burst_time
+            completed_processes.append(shortest_process)
+            remaining_processes.remove(shortest_process)
+
+    return completed_processes
 
 def average_turnaround_time(processes):
     if not processes:
@@ -361,10 +389,10 @@ def choose_algorithm():
     print("1. FCFS (First Come First Serve)")
     print("2. SJF (Shortest Job First)")
     print("3. RR (Round Robin)")
-    print("4. Priority Preemptive")
-    print("5. Priority Non_Preemptive")
-    print("6. Quit")
-
+    print("4. SRTF Preemptive (Shortest Remaining Time First)")
+    print("6. Priority Preemptive")
+    print("6. Priority Non_Preemptive")
+    print("7. Quit")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -376,14 +404,16 @@ def choose_algorithm():
         return lambda processes: round_robin(processes,
                                              time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
     elif choice == '4':
-        return priority_preemptive, "Priority Preemptive"
+        return srtf_preemptive, "SRTF Preemptive (Shortest Remaining Time First)"
     elif choice == '5':
-        return priority_non_preemptive, "Priority Non_Preemptive"
+        return priority_preemptive, "Priority Preemptive"
     elif choice == '6':
+        return priority_non_preemptive, "Priority Non_Preemptive"
+    elif choice == '7':
         return None, None
     else:
         print("Invalid choice. Using default Priority Preemptive.")
-        return priority_preemptive, "Priority Preemptive"
+        return fcfs, "Priority Preemptive"
 
 
 def get_input_files_from_directory(directory_path):
@@ -398,13 +428,21 @@ def get_input_files_from_directory(directory_path):
 directory_path = "C:/Users/ADMIN/PycharmProjects/pythonCPU"
 input_files = get_input_files_from_directory(directory_path)
 
+def read_file(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            content = file.read()
+            print(content)
+    except FileNotFoundError:
+        print(f"Error: File '{file_name}' not found.")
 
 def main():
     while True:
-        print("\nMenu:")
+        print("\nCPU SCHEDULING ALGORITHM:")
         print("1. Run a Single Algorithm")
         print("2. Compare Algorithms")
-        print("3. Quit")
+        print("3. Display file")
+        print("4. Quit")
         choice = input("Enter your choice: ")
 
         if choice == '1':
@@ -438,10 +476,16 @@ def main():
         elif choice == '2':
             compare_algorithms()
         elif choice == '3':
+            # break
+            print("All Files in the Directory:")
+            for file_path in input_files:
+                print(file_path)
+            print("-------------------")
+            file_name = input("Open Files name : ")
+            read_file(file_name)
+        elif choice == '4':
+            print("Goodbye 😊😊")
             break
-            # print("Input Files in the Directory:")
-            # for file_path in input_files:
-            #     print(file_path)
         else:
             print("Invalid choice. Please try again.")
 
