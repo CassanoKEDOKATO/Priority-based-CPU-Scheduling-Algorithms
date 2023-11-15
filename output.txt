@@ -28,3 +28,8 @@ Results using SJF (Shortest Job First):
 Average Waiting Time: 4.333333333333333
 Input File: INPUT1.TXT
 
+--------------------------------------
+Results using Priority Preemptive:
+Average Waiting Time: 7.0
+Input File: INPUT4.TXT
+

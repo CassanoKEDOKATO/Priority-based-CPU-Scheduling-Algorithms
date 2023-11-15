@@ -353,7 +353,25 @@ def compare_algorithms():
 #         print(f"Average Turnaround Time: {avg_turnaroundTime}")
 
 # ... Rest of the code ...
+def get_input_files_from_directory(directory_path):
+    input_files = []
+    for file_name in os.listdir(directory_path):
+        if file_name.endswith(".txt"):  # Chỉ xem xét các file có đuôi là .txt
+            input_files.append(os.path.join("", file_name))
+    return input_files
 
+
+# Sử dụng hàm get_input_files_from_directory để lấy danh sách các file input từ một thư mục cụ thể
+directory_path = "C:/Users/ADMIN/PycharmProjects/pythonCPU"
+input_files = get_input_files_from_directory(directory_path)
+
+def read_file(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            content = file.read()
+            print(content)
+    except FileNotFoundError:
+        print(f"Error: File '{file_name}' not found.")
 def choose_input_file():
     print("Choose an input file:")
     print("1. input1.txt")
@@ -390,7 +408,7 @@ def choose_algorithm():
     print("2. SJF (Shortest Job First)")
     print("3. RR (Round Robin)")
     print("4. SRTF Preemptive (Shortest Remaining Time First)")
-    print("6. Priority Preemptive")
+    print("5. Priority Preemptive")
     print("6. Priority Non_Preemptive")
     print("7. Quit")
     choice = input("Enter your choice: ")
@@ -413,28 +431,7 @@ def choose_algorithm():
         return None, None
     else:
         print("Invalid choice. Using default Priority Preemptive.")
-        return fcfs, "Priority Preemptive"
-
-
-def get_input_files_from_directory(directory_path):
-    input_files = []
-    for file_name in os.listdir(directory_path):
-        if file_name.endswith(".txt"):  # Chỉ xem xét các file có đuôi là .txt
-            input_files.append(os.path.join("", file_name))
-    return input_files
-
-
-# Sử dụng hàm get_input_files_from_directory để lấy danh sách các file input từ một thư mục cụ thể
-directory_path = "C:/Users/ADMIN/PycharmProjects/pythonCPU"
-input_files = get_input_files_from_directory(directory_path)
-
-def read_file(file_name):
-    try:
-        with open(file_name, 'r') as file:
-            content = file.read()
-            print(content)
-    except FileNotFoundError:
-        print(f"Error: File '{file_name}' not found.")
+        return fcfs, "FCFS (First Come First Serve)"
 
 def main():
     while True:
