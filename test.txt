@@ -1,5 +1,0 @@
-Comparison Results for input1.txt:
-
-Algorithm: FCFS (First Come First Serve)
-Average Waiting Time: 4.0
-Average Turnaround Time: 6.833333333333333

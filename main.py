@@ -1,3 +1,4 @@
+import os
 from collections import deque
 
 
@@ -11,6 +12,7 @@ class Process:
         self.waiting_time = 0
         self.turnaround_time = 0
         self.remaining_time = burst_time
+
 
 def fcfs(processes):
     processes.sort(key=lambda x: x.arrival_time)  # Sắp xếp tiến trình theo thời gian xuất hiện
@@ -26,7 +28,8 @@ def fcfs(processes):
 
 
 def sjf_non_preemptive(processes):
-    processes.sort(key=lambda x: (x.burst_time, x.arrival_time))  # Sắp xếp tiến trình theo burst time và thời gian xuất hiện
+    processes.sort(
+        key=lambda x: (x.burst_time, x.arrival_time))  # Sắp xếp tiến trình theo burst time và thời gian xuất hiện
     curr_time = 0
     for process in processes:
         if process.arrival_time > curr_time:
@@ -36,8 +39,6 @@ def sjf_non_preemptive(processes):
         process.waiting_time = process.turnaround_time - process.burst_time
         curr_time = process.completion_time
     return processes
-
-
 
 
 def round_robin(processes, time_quantum):
@@ -60,10 +61,10 @@ def round_robin(processes, time_quantum):
     return completed_processes
 
 
-
 def priority_preemptive(processes):
     def find_max_prior_arrived(currTime, lst):
-        available_processes = [process for process in lst if process.arrival_time <= currTime and process.remaining_time > 0]
+        available_processes = [process for process in lst if
+                               process.arrival_time <= currTime and process.remaining_time > 0]
         if available_processes:
             available_processes.sort(key=lambda x: x.priority)
             return available_processes[0], True
@@ -101,6 +102,34 @@ def priority_non_preemptive(processes):
         curr_time = process.completion_time
     return processes
 
+def srtf_preemptive(processes):
+    processes.sort(key=lambda x: x.arrival_time)  # Sort processes by arrival time
+    current_time = 0
+    remaining_processes = list(processes)
+    completed_processes = []
+
+    while remaining_processes:
+        eligible_processes = [p for p in remaining_processes if p.arrival_time <= current_time]
+        if not eligible_processes:
+            current_time += 1
+            continue
+
+        # Find the process with the shortest remaining burst time
+        shortest_process = min(eligible_processes, key=lambda x: x.remaining_time)
+
+        # Execute the process for one time unit
+        shortest_process.remaining_time -= 1
+        current_time += 1
+
+        # Check if the process has completed
+        if shortest_process.remaining_time == 0:
+            shortest_process.completion_time = current_time
+            shortest_process.turnaround_time = shortest_process.completion_time - shortest_process.arrival_time
+            shortest_process.waiting_time = shortest_process.turnaround_time - shortest_process.burst_time
+            completed_processes.append(shortest_process)
+            remaining_processes.remove(shortest_process)
+
+    return completed_processes
 
 def average_turnaround_time(processes):
     if not processes:
@@ -135,24 +164,34 @@ def get_processes_from_file(file_path):
         for line in lines:
             process_data = line.split()
             if len(process_data) == 4:
-                process_id, arrival_time, burst_time, priority = map(int, process_data)
-                process = Process(process_id, arrival_time, burst_time, priority)
+                if process_data[0] != None:
+                    process_id, arrival_time, burst_time = process_data
+                    process = Process(process_id, int(arrival_time), int(burst_time), int(priority))
+                else:
+                    process_id, arrival_time, burst_time, priority = map(int, process_data)
+                    process = Process(process_id, arrival_time, burst_time, priority)
             elif len(process_data) == 3:
-                process_id, arrival_time, burst_time = map(int, process_data)
-                process = Process(process_id, arrival_time, burst_time, '' )
+                if process_data[0] != None:
+                    process_id, arrival_time, burst_time = process_data
+                    process = Process(process_id, int(arrival_time), int(burst_time), '')
+                else:
+                    process_id, arrival_time, burst_time = map(int, process_data)
+                    process = Process(process_id, arrival_time, burst_time, '')
             else:
                 print(f"Invalid data in line: {line}")
                 continue
             processes.append(process)
     return processes
 
-def write_results_to_file(file_path, avg_waitingTime,avg_turnaroundTime, input_file, algorithm_type):
+
+def write_results_to_file(file_path, avg_waitingTime, avg_turnaroundTime, input_file, algorithm_type):
     with open(file_path, 'a') as file:
         file.write(f"Results using {algorithm_type}:\n")
         file.write(f"Average Waiting Time: {avg_waitingTime}\n")
         file.write(f"Average Turnaround  Time: {avg_turnaroundTime}\n")
-        file.write(f"Input File: {input_file}\n")
+        file.write(f"Input File: {input_file.upper()}\n")
         file.write("\n")
+
 
 def sort_output_file(file_path):
     with open(file_path, 'r') as file:
@@ -184,26 +223,155 @@ def sort_output_file(file_path):
             file.write(f"Input File: {data['input_file']}\n")
             file.write("\n")
 
-# def write_results_to_file(file_path, results, avg_waitingTime, avg_turnaroundTime, input_file, algorithm_type):
-#     gantt_chart = generate_gantt_chart(results)
-#     with open(file_path, 'a') as file:
-#         file.write(f"\nResults for {input_file} using {algorithm_type}:\n")
-#         file.write("\n.\n")
-#         file.write(f"ProcessID\tArrivalTime\tBurstTime")
-#         if isinstance(results[0], ProcessWithPriority):
-#             file.write("\tPriority")
-#         file.write("\tCompletionTime\tTurnaroundTime\tWaitingTime\n")
-#         for process in results:
-#             file.write(f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}")
-#             if isinstance(process, ProcessWithPriority):
-#                 file.write(f"\t\t\t{process.priority}")
-#             file.write(f"\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}\n")
+
+def compare_algorithms():
+    print("Compare Algorithms")
+    num_algorithms = int(input("Enter the number of algorithms to compare: "))
+
+    chosen_algorithms = []
+    for i in range(num_algorithms):
+        print(f"\nChoose algorithm {i + 1}:")
+        scheduling_algorithm, algorithm_type = choose_algorithm()
+        if scheduling_algorithm is None:
+            return None
+        chosen_algorithms.append((scheduling_algorithm, algorithm_type))
+
+    file_name = choose_input_file()
+    list_processes = get_processes_from_file(file_name)
+    output_file_name = input("Enter the output file name (Example: compare_results.txt): ")
+    results = []
+    for algorithm, algorithm_type in chosen_algorithms:
+        result = algorithm(list_processes)
+        avg_turnaroundTime = average_turnaround_time(result)
+        avg_waitingTime = average_waiting_time(result)
+        results.append((algorithm_type, result, avg_waitingTime, avg_turnaroundTime))
+
+        print(f"\nResult Table {algorithm_type}:")
+        print(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime")
+        for process in result:
+            if hasattr(process, 'priority'):
+                print(
+                    f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+            else:
+                print(
+                    f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\tNo Priority\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+    with open(output_file_name, 'a') as file:
+        file.write(f"-------------------- {file_name.upper()}--------------------\n")
+        file.write(f"Comparing {num_algorithms} algorithms for {file_name}:\n")
+        for algorithm_type, _, avg_waitingTime, avg_turnaroundTime in results:
+            print(f"------------------------------------\n")
+            file.write(f"Algorithm: {algorithm_type}\n")
+            print(f"Algorithm: {algorithm_type}\n")
+            file.write(f"Average Waiting Time: {avg_waitingTime}\n")
+            print(f"Average Waiting Time: {avg_waitingTime}\n")
+            file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n")
+            print(f"Average Turnaround Time: {avg_turnaroundTime}\n")
+            file.write("\n")
+
+
+# def compare_algorithms():
+#     print("Compare Algorithms")
+#     num_algorithms = int(input("Enter the number of algorithms to compare: "))
 #
-#         file.write(f"\nAverage Waiting Time: {avg_waitingTime}\n")
-#         file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n")
-#         file.write(f"\nGantt Chart: \n")
-#         file.write(f"\n {gantt_chart} \n")
-#         file.write(f"\n--------------------------------------------------------------------------------------------------\n")
+#     chosen_algorithms = []
+#     for i in range(num_algorithms):
+#         print(f"\nChoose algorithm {i + 1}:")
+#         scheduling_algorithm, algorithm_type = choose_algorithm()
+#         if scheduling_algorithm is None:
+#             return None
+#         chosen_algorithms.append((scheduling_algorithm, algorithm_type))
+#
+#     file_name = choose_input_file()
+#
+#     list_processes = get_processes_from_file(file_name)
+#
+#     output_file_name = input("Enter the output file name (Example: compare_results.txt): ")
+#
+#     avg_waiting_times = []
+#     avg_turnaround_times = []
+#
+#     with open(output_file_name, 'a') as output_file:
+#         output_file.write(f"Comparison Results for {file_name}:\n")
+#
+#         for algorithm, algorithm_type in chosen_algorithms:
+#             result = algorithm(list_processes)
+#             avg_turnaround_time = average_turnaround_time(result)
+#             avg_waiting_time = average_waiting_time(result)
+#             avg_waiting_times.append(avg_waiting_time)
+#             avg_turnaround_times.append(avg_turnaround_time)
+#
+#             output_file.write(f"\nAlgorithm: {algorithm_type}\n")
+#             output_file.write(f"Average Waiting Time: {avg_waiting_time}\n")
+#             output_file.write(f"Average Turnaround Time: {avg_turnaround_time}\n")
+#
+#             print(f"\n{algorithm_type}:")
+#             print(f"Average Waiting Time: {avg_waiting_time}")
+#             print(f"Average Turnaround Time: {avg_turnaround_time}")
+#
+#     print(f"Results saved to {output_file_name}")
+
+# ... Rest of the code ...
+
+# def compare_algorithms():
+#     print("Compare Algorithms")
+#     num_algorithms = int(input("Enter the number of algorithms to compare: "))
+#
+#     chosen_algorithms = []
+#     for i in range(num_algorithms):
+#         print(f"\nChoose algorithm {i + 1}:")
+#         scheduling_algorithm, algorithm_type = choose_algorithm()
+#         if scheduling_algorithm is None:
+#             return None
+#         chosen_algorithms.append((scheduling_algorithm, algorithm_type))
+#
+#     file_name = choose_input_file()
+#
+#     list_processes = get_processes_from_file(file_name)
+#
+#     for algorithm, algorithm_type in chosen_algorithms:
+#         result = algorithm(list_processes)
+#         avg_turnaroundTime = average_turnaround_time(result)
+#         avg_waitingTime = average_waiting_time(result)
+#
+#         print(f"\nResult Table {algorithm_type}:")
+#         print(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime")
+#         for process in result:
+#             if hasattr(process, 'priority'):
+#                 print(
+#                     f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+#             else:
+#                 print(
+#                     f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\tNo Priority\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+#
+#         with open('compare.txt', 'a') as file:
+#             file.write(f"Algorithm: {algorithm_type}\n")
+#             file.write(f"Average Waiting Time: {avg_waitingTime}\n")
+#             file.write(f"Average Turnaround Time: {avg_turnaroundTime}\n\n")
+#
+#         print(f"\n{algorithm_type}:")
+#         print(f"Average Waiting Time: {avg_waitingTime}")
+#         print(f"Average Turnaround Time: {avg_turnaroundTime}")
+
+# ... Rest of the code ...
+def get_input_files_from_directory(directory_path):
+    input_files = []
+    for file_name in os.listdir(directory_path):
+        if file_name.endswith(".txt"):  # Chỉ xem xét các file có đuôi là .txt
+            input_files.append(os.path.join("", file_name))
+    return input_files
+
+
+# Sử dụng hàm get_input_files_from_directory để lấy danh sách các file input từ một thư mục cụ thể
+directory_path = "C:/Users/ADMIN/PycharmProjects/pythonCPU"
+input_files = get_input_files_from_directory(directory_path)
+
+def read_file(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            content = file.read()
+            print(content)
+    except FileNotFoundError:
+        print(f"Error: File '{file_name}' not found.")
 def choose_input_file():
     print("Choose an input file:")
     print("1. input1.txt")
@@ -212,6 +380,7 @@ def choose_input_file():
     print("4. input4.txt")
     print("5. input5.txt")
     print("6. input6.txt")
+    print("7. input7.txt")
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -226,20 +395,23 @@ def choose_input_file():
         return "input5.txt"
     elif choice == '6':
         return "input6.txt"
+    elif choice == '7':
+        return "input7.txt"
     else:
         print("Invalid choice. Using default file input1.txt.")
         return "input1.txt"
+
+
 def choose_algorithm():
     print("Choose a scheduling algorithm:")
     print("1. FCFS (First Come First Serve)")
     print("2. SJF (Shortest Job First)")
     print("3. RR (Round Robin)")
-    print("4. Priority Preemptive")
-    print("5. Priority Non Preemptive")
-    print("6. Quit")
-
+    print("4. SRTF Preemptive (Shortest Remaining Time First)")
+    print("5. Priority Preemptive")
+    print("6. Priority Non_Preemptive")
+    print("7. Quit")
     choice = input("Enter your choice: ")
-
 
     if choice == '1':
         return fcfs, "FCFS (First Come First Serve)"
@@ -247,54 +419,73 @@ def choose_algorithm():
         return sjf_non_preemptive, "SJF (Shortest Job First)"
     elif choice == '3':
         time_quantum = int(input("Enter time quantum for Round Robin('example:4'): "))
-        return lambda processes: round_robin(processes, time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
+        return lambda processes: round_robin(processes,
+                                             time_quantum), f"RR (Round Robin) with Time Quantum {time_quantum}"
     elif choice == '4':
-        return priority_preemptive, "Priority Preemptive"
+        return srtf_preemptive, "SRTF Preemptive (Shortest Remaining Time First)"
     elif choice == '5':
-        return priority_non_preemptive, "Priority Non Preemptive"
+        return priority_preemptive, "Priority Preemptive"
     elif choice == '6':
+        return priority_non_preemptive, "Priority Non_Preemptive"
+    elif choice == '7':
         return None, None
     else:
         print("Invalid choice. Using default Priority Preemptive.")
-        return priority_preemptive, "Priority Preemptive"
-
-
-# Trong hàm main, cập nhật phần sau:
+        return fcfs, "FCFS (First Come First Serve)"
 
 def main():
     while True:
-        scheduling_algorithm, algorithm_type = choose_algorithm()
-        if scheduling_algorithm is None:
+        print("\nCPU SCHEDULING ALGORITHM:")
+        print("1. Run a Single Algorithm")
+        print("2. Compare Algorithms")
+        print("3. Display Result")
+        print("4. Quit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            scheduling_algorithm, algorithm_type = choose_algorithm()
+            if scheduling_algorithm is not None:
+                file_name = choose_input_file()
+                list_processes = get_processes_from_file(file_name)
+                result = scheduling_algorithm(list_processes)
+                avg_turnaroundTime = average_turnaround_time(list_processes)
+                avg_waitingTime = average_waiting_time(list_processes)
+                print(f"\nResult Table {algorithm_type}:")
+                print(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime")
+                for process in result:
+                    if hasattr(process, 'priority'):
+                        print(
+                            f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+                    else:
+                        print(
+                            f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\tNo Priority\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
+                print(f"\nAverage Waiting Time: {avg_waitingTime}")
+                print(f"Average Turnaround Time: {avg_turnaroundTime}")
+                print("\nGantt Chart: \n")
+                gantt_chart = generate_gantt_chart(result)
+                print(gantt_chart)
+                print(
+                    "\n--------------------------------------------------------------------------------------------------\n")
+                output_file = "output.txt"
+                write_results_to_file(output_file, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
+                sort_output_file(output_file)
+
+        elif choice == '2':
+            compare_algorithms()
+        elif choice == '3':
+            # break
+            print("All Files in the Directory:")
+            for file_path in input_files:
+                print(file_path)
+            print("-------------------")
+            file_name = input("Open Files name : ")
+            read_file(file_name)
+        elif choice == '4':
+            print("Goodbye 😊😊")
             break
+        else:
+            print("Invalid choice. Please try again.")
 
-        file_name = choose_input_file()
-
-        list_processes = get_processes_from_file(file_name)
-
-        result = scheduling_algorithm(list_processes)
-        avg_turnaroundTime = average_turnaround_time(list_processes)
-        avg_waitingTime = average_waiting_time(list_processes)
-        print("\nResult Table " f"{algorithm_type}" ":")
-        print(f"ProcessID\tArrivalTime\tBurstTime\tPriority\tCompletionTime\tTurnaroundTime\tWaitingTime")
-        for process in result:
-            if hasattr(process, 'priority'):
-                print(
-                    f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\t{process.priority}\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
-            else:
-                print(
-                    f"{process.process_id}\t\t\t{process.arrival_time}\t\t\t{process.burst_time}\t\t\tNo Priority\t\t\t{process.completion_time}\t\t\t\t{process.turnaround_time}\t\t\t\t{process.waiting_time}")
-        print(f"\nAverage Waiting Time: {avg_waitingTime}")
-        print(f"Average Turnaround Time: {avg_turnaroundTime}")
-        print("\nGantt Chart: \n")
-        gantt_chart = generate_gantt_chart(result)
-        print(gantt_chart)
-        print("\n--------------------------------------------------------------------------------------------------\n")
-        output_file = "output.txt"
-        write_results_to_file(output_file, avg_waitingTime, avg_turnaroundTime, file_name, algorithm_type)
-        sort_output_file(output_file)
-
-
-# Cuối cùng, gọi hàm main:
 
 if __name__ == "__main__":
     main()

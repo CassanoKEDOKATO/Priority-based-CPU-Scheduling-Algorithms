@@ -1,5 +1,5 @@
-Comparison Results for input1.txt:
-
+-------------------- INPUT1.TXT--------------------
+Comparing 2 algorithms for input1.txt:
 Algorithm: FCFS (First Come First Serve)
 Average Waiting Time: 4.0
 Average Turnaround Time: 6.833333333333333
@@ -7,3 +7,4 @@ Average Turnaround Time: 6.833333333333333
 Algorithm: SJF (Shortest Job First)
 Average Waiting Time: 4.333333333333333
 Average Turnaround Time: 7.166666666666667
+
